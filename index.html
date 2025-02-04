@@ -1,10 +1,42 @@
 <!DOCTYPE HTML>
 <html>
   <head>
+    <style type="text/css">
+          .header {
+      width: 100%;
+      height: 100px;
+      background-color: #ddddff;
+      display: flex;
+      justify-content: center;
+    }
     
+    .header-content {
+      position: relative;
+      width: 600px;
+      height: 100%;
+    }
+    
+    .logo {
+      position: absolute;
+      height: 90%;
+      left: 10px;
+      top: 5%;
+    }
+    
+    h1 {
+      position: absolute;
+      top: 10%;
+      left: 120px;
+      font-family: Garamond;
+    }
+    </style>
   </head>
   <body>
-    <h1>Hello world!</h1>
-    <image src="https://scfd-four-no-reply.github.io/Logo%20500.png">
+    <div class="header">
+      <div class="header-content">
+        <image class="logo" src="https://scfd-four-no-reply.github.io/Logo%20500.png">
+        <h1>Catee Cakes & Cupcakes</h1>
+      </div>
+    </div>
   </body>
 </html>
