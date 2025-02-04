@@ -2,33 +2,69 @@
 <html>
   <head>
     <style type="text/css">
-          .header {
-      width: 100%;
-      height: 100px;
-      background-color: #ddddff;
-      display: flex;
-      justify-content: center;
-    }
-    
-    .header-content {
-      position: relative;
-      width: 600px;
-      height: 100%;
-    }
-    
-    .logo {
-      position: absolute;
-      height: 90%;
-      left: 10px;
-      top: 5%;
-    }
-    
-    h1 {
-      position: absolute;
-      top: 10%;
-      left: 120px;
-      font-family: Garamond;
-    }
+      body {
+        height: 10000px;
+      }
+      
+      .header {
+        position: sticky;
+        top: 0;
+        width: 100%;
+        height: 100px;
+        background-color: #ddddff;
+        display: flex;
+        justify-content: center;
+        box-shadow: 0 0 10px;
+        z-index: 1;
+      }
+      
+      .header-content {
+        position: relative;
+        width: 800px;
+        height: 100%;
+      }
+      
+      .logo {
+        position: absolute;
+        height: 90%;
+        left: 10px;
+        top: 5%;
+      }
+      
+      h1 {
+        position: absolute;
+        top: 10%;
+        left: 120px;
+        font-family: Garamond;
+      }
+      
+      .abstract {
+        position: relative;
+        display: flex;
+        justify-content: center;
+      }
+      
+      .abstract-background {
+        position: absolute;
+        width: 100%;
+      }
+      
+      .abstract-content {
+        width: 800px;
+      }
+      
+      .abstract-card {
+        position: absolute;
+        width: 400px;
+        background-color: #ffffff88;
+        top: 100px;
+        border-radius: 30px;
+        padding: 10px;
+      }
+      
+      .abstract-text {
+        font-family: papyrus;
+      }
     </style>
   </head>
   <body>
@@ -37,6 +73,16 @@
         <image class="logo" src="https://scfd-four-no-reply.github.io/Logo%20500.png">
         <h1>Catee Cakes & Cupcakes</h1>
       </div>
+    </div>
+    <div class="abstract">
+        <image class="abstract-background" src="https://assets-eu-01.kc-usercontent.com/559bb7d3-88a4-01c1-79a3-dd4d5b2d2bb0/74eccdb3-b6ca-4ce4-904b-ec403134b68d/Easy%20Chocolate%20Celebration%20Cake_Landscape%205.jpg">
+        <div class="abstract-content">
+          <div class="abstract-card">
+            <p class="abstract-text">
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+            </p>
+          </div>
+        </div>
     </div>
   </body>
 </html>
