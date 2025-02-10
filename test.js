@@ -1,1 +1,3 @@
-return "OK"
+function doGet(e) {
+  return "OK";
+}
