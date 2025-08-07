@@ -62,9 +62,9 @@
 
     async function get_details() {
       if (asset_key != null) {
-        
+        const response = await fetch("https://script.google.com/macros/s/AKfycbz4X-OjZHeSL35gpcl3ikSaDhD8caDJ8Inaa2R_QJ0bGTbfo74S7Mr1zuB77r-oODIX/exec?id=" + asset_id);
 
-        const result = await response.json();
+        const result = JSON.parse(await response.text());
 
         asset_id = result.assetId;
         document.getElementById("details").innerHTML = "<li>Asset Id: " + result.assetId + "</li><li>Description: " + result.description + "</li><li>Serial #: " + result.serialNumber + "</li>";
