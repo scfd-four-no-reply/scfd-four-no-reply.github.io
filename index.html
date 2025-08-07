@@ -55,7 +55,8 @@
     }
 
     function request() {
-      window.alert("Redirecting to request portal. You're Asset Id for the request is " + asset_id);
+      navigator.clipboard.writeText(asset_id);
+      window.alert("Redirecting to request portal. Your Asset Id for the request is " + asset_id + ". It has been copied to your clipboard.");
       window.location.href = "https://scfd4.managerpluscloud.com/lt/portals/portal";
     }
 
