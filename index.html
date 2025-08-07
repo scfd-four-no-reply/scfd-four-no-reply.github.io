@@ -62,7 +62,7 @@
 
     async function get_details() {
       if (asset_key != null) {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbz4X-OjZHeSL35gpcl3ikSaDhD8caDJ8Inaa2R_QJ0bGTbfo74S7Mr1zuB77r-oODIX/exec?id=" + asset_id);
+        const response = await fetch("https://script.google.com/macros/s/AKfycbz4X-OjZHeSL35gpcl3ikSaDhD8caDJ8Inaa2R_QJ0bGTbfo74S7Mr1zuB77r-oODIX/exec?id=" + asset_id, {redirect: "follow", method: "GET", headers: {"Content-Type": "text/play;charset=utf-8"}});
 
         const result = JSON.parse(await response.text());
 
