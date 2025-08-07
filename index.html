@@ -37,11 +37,13 @@
     <div id="actions">
       <hr>
       <button onclick="redirect()">View Asset Inspections</button>
-      <button>Create Work Request for this Asset</button>
+      <button onclick="request()">Create Work Request for this Asset</button>
     </div>
     </div>
   </body>
   <script>
+    var asset_id = "UNDEFINED";
+    
     function get(name){
       if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) return decodeURIComponent(name[1]);
     }
@@ -52,12 +54,18 @@
       if (asset_id != null) window.location.href = "https://scfd4.managerpluscloud.com/oc/asset/" + asset_id;
     }
 
+    function request() {
+      window.alert("Redirecting to request portal. You're Asset Id for the request is " + asset_id);
+      window.location.href = "https://scfd4.managerpluscloud.com/lt/portals/portal";
+    }
+
     async function get_details() {
       if (asset_id != null) {
         const response = await fetch("https://scfd4.managerpluscloud.com/api2/Assets/" + asset_id, {method: "GET", headers: {"Authorization": "Bearer 05e5988b7b654ba7a7f047ed87a8730d-2"}});
 
         const result = await response.json();
 
+        asset_id = result.assetId;
         document.getElementById("details").innerHTML = "<li>Asset Id: " + result.assetId + "</li><li>Description: " + result.description + "</li><li>Serial #: " + result.serialNumber + "</li>";
         document.getElementById("actions").style.display = "flex";
       } else document.getElementById("details").innerHTML = "Invalid Link!";
