@@ -54,6 +54,7 @@
     <button class="collect" onclick="getLocation()">Collect Coordinates</button>
     <hr>
     <p id="coordinates"></p>
+    <p id="id"></p>
     <hr>
     <p id="emailStatus" style="margin-bottom: 8px"></p>
     <div id="emailButton">
@@ -66,6 +67,13 @@
     const emailButton = document.getElementById("emailButton");
     const URL = "https://script.google.com/macros/s/AKfycbwuNE1oaoq0obzzDOloU1ea3QnPlU-ThHAKp8uJSjohLHlNPHP00M3iDsS3B1Mu_kLcoQ/exec";
     let pairs = [];
+
+    function get(name){
+      if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+        return decodeURIComponent(name[1]);
+    }
+     
+    document.getElementById("id").innerHTML = get('id');
     
     function getLocation() {
       if (navigator.geolocation) {
