@@ -1,62 +1,68 @@
 <!DOCTYPE html>
 <html>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #161e29;
+    }
+
+    hr {
+      width:100%
+    }
+    
+    ul {
+      color: white;
+      font-size: 24pt;
+    }
+
+    div {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    
+    button {
+      width: 500px;
+      font-size: 24pt;
+      padding: 16px;
+      border-radius: 16px;
+      margin: 16px;
+    }
+  </style>
   <body>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background: "#161e29";
-      }
-    
-      h1 {
-        font-size: 48pt;
-      }
-    
-      hr {
-        width:100%
-      }
-      
-      li {
-        font-size: 24pt;
-      }
-    </style>
-    
-    <h1>Asset Management</h1>
-    <hr>
     <ul id="details">Loading Asset details...</ul>
-    <hr>
-    <button onclick="redirect()">View Asset Inspections</button>
-    <button>Create Work Request for this Asset</button>
+    <div id="actions">
+      <hr>
+      <button onclick="redirect()">View Asset Inspections</button>
+      <button>Create Work Request for this Asset</button>
     </div>
-      
-    <script>
+    </div>
+  </body>
+  <script>
     function get(name){
-      if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
-        return decodeURIComponent(name[1]);
+      if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) return decodeURIComponent(name[1]);
     }
-     
-    const asset_id = get('id');
-    
+
+    const asset_id = get("id");
+
     function redirect() {
-      if (asset_id != null) {
-        window.location.href = "https://scfd4.managerpluscloud.com/oc/asset/" + asset_id;
-      }
+      if (asset_id != null) window.location.href = "https://scfd4.managerpluscloud.com/oc/asset/" + asset_id;
     }
-    
+
     async function get_details() {
       if (asset_id != null) {
         const response = await fetch("https://scfd4.managerpluscloud.com/api2/Assets/" + asset_id, {method: "GET", headers: {"Authorization": "Bearer 05e5988b7b654ba7a7f047ed87a8730d-2"}});
-        
+
         const result = await response.json();
-        
+
         document.getElementById("details").innerHTML = "<li>Asset Id: " + result.assetId + "</li><li>Description: " + result.description + "</li><li>Serial #: " + result.serialNumber + "</li>";
-      } else {
-        document.getElementById("details").innerHTML = "Invalid Link!";
-      }
+        document.getElementById("actions").style.display = "flex";
+      } else document.getElementById("details").innerHTML = "Invalid Link!";
     }
-    
+
     get_details();
-    </script>
-  </body>
+  </script>
 </html>
