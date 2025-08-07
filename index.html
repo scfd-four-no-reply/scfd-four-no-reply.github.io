@@ -49,75 +49,24 @@
       }
     </style>
     
-    <h1>Geolocator</h1>
+    <h1>Asset Management</h1>
     <hr>
-    <button class="collect" onclick="getLocation()">Collect Coordinates</button>
-    <hr>
-    <p id="coordinates"></p>
-    <p id="id"></p>
-    <hr>
-    <p id="emailStatus" style="margin-bottom: 8px"></p>
-    <div id="emailButton">
-    <button class="collect" onclick="sendEmail()">Send Email</button>
+    <button onclick="redirect()">View Asset Inspections</button>
+    <button>Create Work Request for this Asset</button>
     </div>
       
     <script>
-    const list = document.getElementById("coordinates");
-    const email = document.getElementById("emailStatus");
-    const emailButton = document.getElementById("emailButton");
-    const URL = "https://script.google.com/macros/s/AKfycbwuNE1oaoq0obzzDOloU1ea3QnPlU-ThHAKp8uJSjohLHlNPHP00M3iDsS3B1Mu_kLcoQ/exec";
-    let pairs = [];
-
     function get(name){
       if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
         return decodeURIComponent(name[1]);
     }
      
-    document.getElementById("id").innerHTML = get('id');
+    const asset_id = get('id');
     
-    function getLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(success, error);
-      } else { 
-        list.innerHTML = "Geolocation is not supported by this browser.";
+    function redirect() {
+      if (asset_id != null) {
+        window.location.href = "https://scfd4.managerpluscloud.com/oc/asset/" + asset_id
       }
-    }
-    
-    function success(position) {
-      pairs.push([position.coords.latitude, position.coords.longitude]);
-      display_list();
-    }
-    
-    function delete_pair(id) {
-      pairs.splice(id, 1);
-      display_list();
-    }
-    
-    function display_list() {
-      list.innerHTML = "";
-      for (let i = 0; i < pairs.length; i++) {
-        list.innerHTML += "<div class='coord'><p>Latitude: " + pairs[i][0] + 
-      "<br>Longitude: " + pairs[i][1] + "</p><button class='delete' onclick='delete_pair(" + i + ")'>Delete</button></div><br>";
-      }
-    }
-      
-    async function sendEmail() {
-      email.innerHTML = "Sending Email...";
-      emailButton.innerHTML = "";
-      
-      try {
-        const response = await fetch(URL, {
-          method: "POST",
-          body: JSON.stringify(pairs)
-        });
-      } catch (error) {}
-      
-      email.innerHTML = "Email Sent!";
-      emailButton.innerHTML = "<button class='collect' onclick='sendEmail()'>Send Email</button>";
-    }
-    
-    function error() {
-      alert("Sorry, no position available.");
     }
     </script>
   </body>
