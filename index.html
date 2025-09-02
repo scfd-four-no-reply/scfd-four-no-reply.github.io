@@ -16,6 +16,11 @@
       color: white;
       font-size: 24pt;
     }
+    
+    h1 {
+      color: white;
+      font-size: 32pt;
+    }
 
     div {
       display: none;
@@ -31,13 +36,94 @@
       border-radius: 16px;
       margin: 16px;
     }
+    
+    p {
+      color: #ffffff;
+      margin: 0;
+    }
+    
+    label {
+      color: #ffffff;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 500px;
+      margin-top: 32px;
+    }
+
+    input {
+      margin-bottom: 16px;
+    }
+
+    select {
+      margin-bottom: 16px;
+    }
+
+    textarea {
+      margin-bottom: 16px;
+      height: 100px;
+    }
+    
+    form>* {
+      font-size: 20pt;
+    }
   </style>
   <body>
     <ul id="details">Loading Asset details...</ul>
     <div id="actions">
       <hr>
       <button onclick="redirect()">View Asset Inspections</button>
-      <button onclick="request()">Create Work Request for this Asset</button>
+      <p>You can use the following link to go to the normal request portal.</p>
+      <p>Use if you need to make a request for any tools or equipment on this vehicle.</p>
+      <button onclick="request()">Request Portal</button>
+      <hr>
+      <h1>Work Request</h1>
+      <p>You can create a work request for THIS vehicle here.</p>
+      <p>Use the normal request portal if you need to make a request for any tools or equipment ON this vehicle.</p>
+      <form id="work_form">
+        <div id="error"></div>
+        <label for="subject">Subject:</label>
+        <input id="subject" name="subject" type="text">
+
+        <label for="description">Detailed Description:</label>
+        <textarea id="description" name="description"></textarea>
+
+        <label for="priority">Priority:</label>
+        <select id="priority" name="priority">
+          <option value="priority_normal">Normal</option>
+          <option value="priority_minor">Minor</option>
+          <option value="priority_major">Major</option>
+          <option value="priority_critical">Critical</option>
+        </select>
+
+        <label for="name">Name:</label>
+        <input id="name" name="name" type="text">
+
+        <label for="email">Email:</label>
+        <input id="email" name="email" type="text">
+
+        <label for="phone">Phone #:</label>
+        <input id="phone" name="phone" type="text">
+        
+        <label for="station">Station:</label>
+        <select id="station" name="station">
+          <option value="st40@scfd4.net">Station 40</option>
+          <option value="st41@scfd4.net">Station 41</option>
+          <option value="st42@scfd4.net">Station 42</option>
+          <option value="st43@scfd4.net">Station 43</option>
+          <option value="st44@scfd4.net">Station 44</option>
+          <option value="st45@scfd4.net">Station 45</option>
+          <option value="st46@scfd4.net">Station 46</option>
+          <option value="st47@scfd4.net">Station 47</option>
+          <option value="st48@scfd4.net">Station 48</option>
+          <option value="st49@scfd4.net">Station 49</option>
+          <option value="admin@scfd4.net">Admin</option>
+        </select>
+        
+        <input id="submit" type="submit" value="Create Work Request">
+      </form>
     </div>
     </div>
   </body>
@@ -48,14 +134,14 @@
       if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) return decodeURIComponent(name[1]);
     }
 
-    const asset_key = get("id");
+    const asset_key = 374
     function redirect() {
       if (asset_key != null) window.location.href = "https://scfd4.managerpluscloud.com/oc/asset/" + asset_key;
     }
 
     function request() {
       navigator.clipboard.writeText(asset_id);
-      window.alert("Redirecting to request portal. Your Asset Id for the request is " + asset_id + ". It has been copied to your clipboard.");
+      window.alert("Redirecting to request portal. Your Parent Asset Id for the request is " + asset_id + ". It has been copied to your clipboard.");
       window.location.href = "https://scfd4.managerpluscloud.com/lt/portals/portal";
     }
 
@@ -76,5 +162,78 @@
     }
 
     get_details();
+    
+    document.getElementById("work_form").addEventListener('submit', async (event)=>{
+      event.preventDefault();
+
+      // Get form data
+      let data = {
+        "subject": "",
+        "description": "",
+        "priority": "",
+        "name": "",
+        "email": "",
+        "phone": "",
+        "station": ""
+      }
+      let formData = new FormData(document.getElementById('work_form'))
+      for (const pair of formData.entries()) {
+        data[pair[0]] = pair[1];
+      }
+
+      // ensure no fields are blank
+      for (let i = 0; i < 6; i++) {
+        if (data[Object.keys(data)[i]] == "") {
+          document.getElementById('error').innerHTML = "<p style='color:#ff0000'>All fields must be filled!</p>";
+          return;
+        }
+      }
+
+      // Hide form
+      document.getElementById('work_form').innerHTML = "<p>Creating work request...</p>";
+
+      // find priority key
+      let priority_key = -1
+      switch(data.priority) {
+        case "priority_normal":
+          priority_key = 8;
+          break;
+        case "priority_minor":
+          priority_key = 3;
+          break;
+        case "priority_major":
+          priority_key = 2;
+          break;
+        case "priority_critical":
+          priority_key = 1;
+          break;
+      }
+
+      // create request
+      let request_body = {
+        "entityKey": 1,
+        "assetId": asset_id,
+        "purpose": data.subject,
+        "issueDescription": data.description,
+        "priorityKey": priority_key,
+        "requestedByEmail": data.station
+      }
+
+      // send request
+      const token_response = await fetch("https://script.google.com/macros/s/AKfycbyZcxRudyYQ5GLOHwtGy-LP_F3mW7D4-ROiJeUEyKChEejwegMULUYqHXZY9H-YLK0z/exec");  
+      const token = await token_response.text();
+      const response = await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests", {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "POST", body: JSON.stringify(request_body)});
+      const result = await response.json();
+
+      // Update custom fields
+      let request_id = result.requestId;
+      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "REQUESTOR", "value": data.name})});
+      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "REQUESTOR EMAIL", "value": data.email})});
+      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "REQUESTOR PHONE", "value": data.phone})});
+      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "DEPARTMENT", "value": "FLEET"})});
+      
+      // Display completion message
+      document.getElementById('work_form').innerHTML = "<p>Request Sent!</p>";
+    });
   </script>
 </html>
