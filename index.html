@@ -134,7 +134,7 @@
       if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) return decodeURIComponent(name[1]);
     }
 
-    const asset_key = 374
+    const asset_key = get("id");
     function redirect() {
       if (asset_key != null) window.location.href = "https://scfd4.managerpluscloud.com/oc/asset/" + asset_key;
     }
