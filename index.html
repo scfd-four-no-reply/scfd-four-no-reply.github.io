@@ -79,7 +79,7 @@
       <p>Use if you need to make a request for any tools or equipment on this vehicle.</p>
       <button onclick="request()">Request Portal</button>
       <hr>
-      <h1>Create Work Request</h1>
+      <h1>Work Request</h1>
       <p>You can create a work request for THIS vehicle here.</p>
       <p>Use the normal request portal if you need to make a request for any tools or equipment ON this vehicle.</p>
       <form id="work_form">
@@ -129,6 +129,7 @@
   </body>
   <script>
     var asset_id = "UNDEFINED";
+    const serverURL = "";
     
     function get(name){
       if(name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search)) return decodeURIComponent(name[1]);
@@ -147,14 +148,9 @@
 
     async function get_details() {
       if (asset_key != null) {
-        const token_response = await fetch("https://script.google.com/macros/s/AKfycbyZcxRudyYQ5GLOHwtGy-LP_F3mW7D4-ROiJeUEyKChEejwegMULUYqHXZY9H-YLK0z/exec");
-        
-        const token = await token_response.text();
-        
-        const response = await fetch("https://scfd4.managerpluscloud.com/api2/Assets/" + asset_key, {headers: {"Authorization": token}});
-        
+        const response = await fetch("https://63d87637-388d-486d-a56c-6997b19fbf94-00-2nenamiytr6i2.kirk.replit.dev/fetch_asset?asset=" + asset_key);
         const result = await response.json();
-
+        
         asset_id = result.assetId;
         document.getElementById("details").innerHTML = "<li>Asset Id: " + result.assetId + "</li><li>Description: " + result.description + "</li><li>Serial #: " + result.serialNumber + "</li>";
         document.getElementById("actions").style.display = "flex";
@@ -174,7 +170,8 @@
         "name": "",
         "email": "",
         "phone": "",
-        "station": ""
+        "station": "",
+        "asset_id": asset_id
       }
       let formData = new FormData(document.getElementById('work_form'))
       for (const pair of formData.entries()) {
@@ -192,45 +189,8 @@
       // Hide form
       document.getElementById('work_form').innerHTML = "<p>Creating work request...</p>";
 
-      // find priority key
-      let priority_key = -1
-      switch(data.priority) {
-        case "priority_normal":
-          priority_key = 8;
-          break;
-        case "priority_minor":
-          priority_key = 3;
-          break;
-        case "priority_major":
-          priority_key = 2;
-          break;
-        case "priority_critical":
-          priority_key = 1;
-          break;
-      }
-
-      // create request
-      let request_body = {
-        "entityKey": 1,
-        "assetId": asset_id,
-        "purpose": data.subject,
-        "issueDescription": data.description,
-        "priorityKey": priority_key,
-        "requestedByEmail": data.station
-      }
-
-      // send request
-      const token_response = await fetch("https://script.google.com/macros/s/AKfycbyZcxRudyYQ5GLOHwtGy-LP_F3mW7D4-ROiJeUEyKChEejwegMULUYqHXZY9H-YLK0z/exec");  
-      const token = await token_response.text();
-      const response = await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests", {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "POST", body: JSON.stringify(request_body)});
-      const result = await response.json();
-
-      // Update custom fields
-      let request_id = result.requestId;
-      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "REQUESTOR", "value": data.name})});
-      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "REQUESTOR EMAIL", "value": data.email})});
-      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "REQUESTOR PHONE", "value": data.phone})});
-      await fetch("https://scfd4.managerpluscloud.com/api2/WorkRequests/WorkRequestCustomFields?key=" + request_id, {headers: {"Authorization": token, "Content-Type": "application/json"}, method: "PATCH", body: JSON.stringify({"fieldName": "DEPARTMENT", "value": "FLEET"})});
+      // send request to REST server
+      await fetch("https://63d87637-388d-486d-a56c-6997b19fbf94-00-2nenamiytr6i2.kirk.replit.dev/create_request", {method: "POST", body: JSON.stringify(data)});
       
       // Display completion message
       document.getElementById('work_form').innerHTML = "<p>Request Sent!</p>";
