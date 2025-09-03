@@ -148,7 +148,7 @@
 
     async function get_details() {
       if (asset_key != null) {
-        const response = await fetch("https://63d87637-388d-486d-a56c-6997b19fbf94-00-2nenamiytr6i2.kirk.replit.dev/fetch_asset?asset=" + asset_key);
+        const response = await fetch("https://game-test-sgk8.onrender.com/fetch_asset?asset=" + asset_key);
         const result = await response.json();
         
         asset_id = result.assetId;
@@ -190,7 +190,7 @@
       document.getElementById('work_form').innerHTML = "<p>Creating work request...</p>";
 
       // send request to REST server
-      await fetch("https://63d87637-388d-486d-a56c-6997b19fbf94-00-2nenamiytr6i2.kirk.replit.dev/create_request", {method: "POST", body: JSON.stringify(data)});
+      await fetch("https://game-test-sgk8.onrender.com/create_request", {method: "POST", body: JSON.stringify(data)});
       
       // Display completion message
       document.getElementById('work_form').innerHTML = "<p>Request Sent!</p>";
